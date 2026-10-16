@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Porsche — Sales Analytics</title>
+<style>
+body{margin:0;background:#0d0d0e;color-scheme:dark}
+#porsche-sales{max-width:1440px;margin:0 auto}
+button,select,summary,input[type=checkbox]{cursor:pointer}
+</style>
+</head>
+<body>
+<div id="porsche-sales">
+<style>
+#porsche-sales{font-family:Arial,Helvetica,sans-serif;color:#17191c;background:#f4f4f2;border-radius:12px;overflow:hidden;--ink:#17191c;--red:#b51d30}
+#porsche-sales *{box-sizing:border-box}
+#porsche-sales header{background:#111315;color:#fff;padding:27px 34px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+#porsche-sales .wordmark{letter-spacing:7px;font-size:23px;font-weight:500}
+#porsche-sales .eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#73777c}
+#porsche-sales header .eyebrow{color:#b9bcc0}
+#porsche-sales main{padding:30px 34px}
+#porsche-sales h1{font-size:36px;line-height:1.1;font-weight:400;letter-spacing:-1.5px;margin:12px 0}
+#porsche-sales h2{font-size:19px;font-weight:500;margin:0 0 8px}
+#porsche-sales p{font-size:13px;line-height:1.55;color:#686c72;margin:8px 0}
+#porsche-sales .intro{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}
+#porsche-sales .edition{border-left:2px solid var(--red);padding:8px 14px;font-size:12px;line-height:1.6;white-space:nowrap}
+#porsche-sales .filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:20px;background:#fff;border:1px solid #e1e2e3;border-radius:6px}
+#porsche-sales label{display:block;font-size:12px;color:#4f5359}
+#porsche-sales select,#porsche-sales input[type=date]{width:100%;min-width:0;margin-top:7px;padding:11px 9px;background:#fff;color:#17191c;border:1px solid #c9cccf;border-radius:3px;font:inherit;min-height:42px}
+#porsche-sales .date-row{display:flex;gap:14px;flex-wrap:wrap;align-items:end;margin:16px 0}
+#porsche-sales .date-row label{flex:1;min-width:135px}
+#porsche-sales .date-row .check{flex:2;display:flex;align-items:center;gap:8px;min-height:42px}
+#porsche-sales button{font:inherit;color:#24282d;background:#fff;border:1px solid #c9cccf;border-radius:3px;padding:11px 16px;min-height:42px}
+#porsche-sales button:hover{background:#eceeef}
+#porsche-sales .notice{font-size:12px;color:#686c72;margin:12px 0 23px;line-height:1.5}
+#porsche-sales .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#dddfe1;border:1px solid #dddfe1;border-radius:6px;overflow:hidden;margin-bottom:24px}
+#porsche-sales .stat{background:#fff;padding:22px 18px}
+#porsche-sales .stat strong{display:block;font-size:33px;font-weight:400;letter-spacing:-1px;margin:12px 0 6px}
+#porsche-sales .stat small{font-size:12px;color:#6a6e73;display:block;line-height:1.5}
+#porsche-sales .grid{display:grid;grid-template-columns:1.15fr 1fr;gap:20px}
+#porsche-sales .panel{background:#fff;border:1px solid #e1e2e3;padding:24px;border-radius:6px;min-width:0}
+#porsche-sales .bar-row{display:grid;grid-template-columns:145px 1fr 28px;gap:10px;align-items:center;margin:15px 0;font-size:12px}
+#porsche-sales .bar-track{height:9px;background:#f0f1f2;border-radius:1px;overflow:hidden}
+#porsche-sales .bar-fill{height:100%;background:#292d32}
+#porsche-sales .bar-row:first-child .bar-fill{background:var(--red)}
+#porsche-sales .bar-row b{text-align:right;font-weight:500}
+#porsche-sales .section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#porsche-sales .cities{margin-top:20px}
+#porsche-sales .table-wrap{overflow-x:auto}
+#porsche-sales table{border-collapse:collapse;width:100%;font-size:12px;line-height:1.5}
+#porsche-sales th{text-align:left;color:#6a6e73;font-weight:400;padding:15px 10px;border-bottom:1px solid #d8dadd}
+#porsche-sales td{padding:14px 10px;border-bottom:1px solid #edeef0;vertical-align:top;min-width:90px}
+#porsche-sales td:nth-child(3),#porsche-sales td:nth-child(4){min-width:180px}
+#porsche-sales td small{display:block;color:#767a80;margin-top:5px}
+#porsche-sales .insight{padding:16px 18px;background:#f4f4f2;border-left:2px solid var(--red);margin-top:20px;font-size:13px;line-height:1.6}
+#porsche-sales details{font-size:12px;line-height:1.6;margin-top:20px;color:#666a70}
+#porsche-sales summary{padding:8px 0;color:#353a40}
+#porsche-sales footer{display:flex;justify-content:space-between;gap:12px;padding-top:24px;font-size:11px;color:#7a7e84}
+#porsche-sales .error{color:#b51d30}
+#porsche-sales .empty{padding:30px 0;color:#757980;font-size:13px}
+#porsche-sales .count{font-variant-numeric:tabular-nums}
+
+@media(max-width:760px){
+  #porsche-sales header,#porsche-sales main{padding:22px}
+  #porsche-sales .filters,#porsche-sales .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #porsche-sales .grid{grid-template-columns:1fr}
+  #porsche-sales h1{font-size:30px}
+  #porsche-sales .edition{display:none}
+}
+@media(max-width:420px){
+  #porsche-sales header,#porsche-sales main{padding:16px}
+  #porsche-sales header .eyebrow{display:none}
+  #porsche-sales .wordmark{font-size:20px}
+  #porsche-sales .filters{grid-template-columns:1fr}
+  #porsche-sales .bar-row{grid-template-columns:120px 1fr 25px}
+  #porsche-sales .panel{padding:16px}
+  #porsche-sales .stat{padding:16px 12px}
+  #porsche-sales .stat strong{font-size:28px}
+}
+
+#porsche-sales{color:#f4f1eb;background:#101112;--ink:#f4f1eb;--red:#b62438;color-scheme:dark}
+#porsche-sales header{background:#090a0b;border-bottom:1px solid #745c31;padding-top:32px;padding-bottom:32px}
+#porsche-sales .wordmark{color:#d7bb80}
+#porsche-sales h1{color:#faf6ef}
+#porsche-sales .eyebrow{color:#c7ab75}
+#porsche-sales header .eyebrow{color:#b7b1a7}
+#porsche-sales p,#porsche-sales .notice,#porsche-sales details{color:#aaa9a7}
+#porsche-sales .filters,#porsche-sales .panel,#porsche-sales .stat{background:#191b1d;border-color:#333334}
+#porsche-sales .filters{border-top:2px solid #b89b62;padding:22px}
+#porsche-sales label{color:#c9c5be}
+#porsche-sales select,#porsche-sales input[type=date],#porsche-sales button{background:#111315;color:#eee9df;border-color:#484744}
+#porsche-sales select:focus,#porsche-sales input:focus,#porsche-sales button:focus-visible{outline:2px solid #d5b67a;outline-offset:3px}
+#porsche-sales input[type=checkbox]{accent-color:#c6a66c}
+#porsche-sales button:hover{background:#2b2924;border-color:#c7ab75}
+#porsche-sales button:disabled{opacity:.35;cursor:default}
+#porsche-sales .stats{background:#393632;border-color:#393632}
+#porsche-sales .stat strong{color:#e5c88c}
+#porsche-sales .stat small{color:#aaa9a7}
+#porsche-sales .bar-track{background:#303133}
+#porsche-sales .bar-fill{background:#b79a65}
+#porsche-sales .bar-row:first-child .bar-fill{background:#bc3447}
+#porsche-sales .insight{background:#23211e;color:#d6cec0;border-left-color:#bda06a}
+#porsche-sales .edition{color:#d3c6ad}
+#porsche-sales summary{color:#d2c6af}
+#porsche-sales footer{color:#92918e}
+#porsche-sales .error{color:#ff8999}
+#porsche-sales .cities{padding:28px}
+#porsche-sales .cities h2{font-size:25px;margin-top:8px}
+#porsche-sales .local-tools{display:flex;align-items:end;gap:16px;flex-wrap:wrap;padding:18px 0 22px;border-bottom:1px solid #353432;margin-bottom:8px}
+#porsche-sales .local-tools label{flex:1;max-width:340px;min-width:180px}
+#porsche-sales .local-tools p{flex:1;min-width:180px;margin:0;padding-bottom:8px}
+#porsche-sales th{color:#c6af83;border-bottom-color:#494139;padding:17px 12px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+#porsche-sales td{border-bottom-color:#303133;padding:20px 12px}
+#porsche-sales td:first-child{font-size:14px;font-weight:500;color:#faf4e9}
+#porsche-sales tbody tr:hover{background:#202224}
+#porsche-sales td small{color:#b1ada5;line-height:1.6}
+#porsche-sales .model-tag{display:inline-block;padding:5px 9px;background:#292927;color:#e1d5bd;border-radius:4px;margin:0 4px 5px 0;font-size:12px}
+#porsche-sales td:nth-child(4) .model-tag{background:#302125;color:#e4c3c9}
+#porsche-sales .volume{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;border-radius:50%;background:#302b22;color:#e2c183;font-size:16px}
+#porsche-sales .pager{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;flex-wrap:wrap;color:#aaa9a7;font-size:12px}
+#porsche-sales .pager-actions{display:flex;gap:8px}
+#porsche-sales .empty{color:#b4b0aa}
+
+@media(max-width:600px){
+  #porsche-sales .cities{padding:18px}
+  #porsche-sales .section-head{align-items:start;flex-wrap:wrap}
+  #porsche-sales .local-tools label{max-width:none}
+  #porsche-sales .pager-actions{width:100%}
+  #porsche-sales .pager-actions button{flex:1}
+}
+</style>
+
+<header>
+  <div class="wordmark">PORSCHE</div>
+  <span class="eyebrow">Sales intelligence / análise independente</span>
+</header>
+
+<main>
+  <div class="intro">
+    <div>
+      <div class="eyebrow">Visão comercial · Estados Unidos</div>
+      <h1>Performance em perspectiva.</h1>
+      <p>Explore modelos, anos e preferências de venda em cada cidade.</p>
+    </div>
+    <div class="edition">BASE DE VENDAS<br><b>2024 — 2027</b></div>
+  </div>
+
+  <div class="filters">
+    <label>Modelo da Porsche<select id="ps-model"></select></label>
+    <label>Model Year · Ano-modelo<select id="ps-year"></select></label>
+    <label>City · Cidade<select id="ps-city"></select></label>
+    <label>Pay method · Pagamento<select id="ps-pay"></select></label>
+  </div>
+
+  <div class="date-row">
+    <label>Data de venda · De<input id="ps-start" type="date"></label>
+    <label>Até<input id="ps-end" type="date"></label>
+    <label class="check">
+      <input id="ps-cancel" type="checkbox">
+      Incluir registros cancelados
+    </label>
+    <button id="ps-reset" type="button">Limpar filtros ↺</button>
+  </div>
+
+  <div id="ps-notice" class="notice" aria-live="polite"></div>
+  <div class="stats" id="ps-stats" aria-live="polite"></div>
+
+  <div class="grid">
+    <section class="panel">
+      <div class="eyebrow">01 / Modelos</div>
+      <h2>Os mais vendidos</h2>
+      <p>Top 8 no recorte · número de registros</p>
+      <div id="ps-model-bars"></div>
+    </section>
+
+    <section class="panel">
+      <div class="eyebrow">02 / Ano-modelo</div>
+      <h2>Qual ano tem mais saída?</h2>
+      <p>Distribuição por ano-modelo no período selecionado</p>
+      <div id="ps-year-bars"></div>
+      <div id="ps-year-insight" class="insight"></div>
+    </section>
+  </div>
+
+  <section class="panel cities">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">03 / Mercados locais</div>
+        <h2>Preferências por cidade</h2>
+      </div>
+      <span id="ps-cities-count" class="eyebrow"></span>
+    </div>
+
+    <p>Mais e menos vendidos entre modelos com registros no recorte. Empates são exibidos por completo.</p>
+
+    <div class="local-tools">
+      <label>
+        Explorar cidade
+        <select id="ps-local-city">
+          <option value="">Todas as cidades do recorte</option>
+        </select>
+      </label>
+      <p>Filtro exclusivo desta seção. Os indicadores acima mantêm o recorte geral.</p>
+      <button id="ps-local-reset" type="button">Ver todas</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cidade</th>
+            <th>Registros</th>
+            <th>Mais vendidos</th>
+            <th>Menos vendidos</th>
+          </tr>
+        </thead>
+        <tbody id="ps-city-rows"></tbody>
+      </table>
+    </div>
+
+    <div class="pager">
+      <span id="ps-page-label" aria-live="polite"></span>
+      <div class="pager-actions">
+        <button id="ps-prev" type="button">← Anterior</button>
+        <button id="ps-next" type="button">Próxima →</button>
+      </div>
+    </div>
+
+    <div id="ps-local-insight" class="insight"></div>
+  </section>
+
+  <details>
+    <summary>Sobre a base e os critérios da análise</summary>
+    <p>Fonte: Porshue_database(2).xlsx, aba Sanitized. Cada sale_id único representa um registro; não há coluna de quantidade. São usadas as colunas Sanitized de modelo, ano-modelo, cidade, pagamento e data, sem agrupamento adicional de versões de carros ou meios de pagamento.</p>
+    <p>A base tem 100 registros, 79 cidades, 40 modelos, 24 datas inválidas e 7 cancelamentos. Por padrão, todos os status exceto Cancelled são contados, incluindo pedidos pendentes: os totais não equivalem a entregas concluídas. Datas futuras presentes na planilha são preservadas; não representam vendas já realizadas comprovadas.</p>
+    <p>Sem período, registros sem data válida participam da contagem. Ao preencher qualquer limite de data, eles são excluídos. Limites inclusivos. Ano-modelo é diferente de ano da venda. Menos vendidos considera apenas contagens positivas; ausência de um modelo não comprova disponibilidade nem baixa demanda. Nos rankings, empates são ordenados alfabeticamente; o Top 8 pode cortar um empate.</p>
+  </details>
+
+  <footer>
+    <span>PORSCHE / SALES ANALYTICS</span>
+    <span>Painel independente · sem vínculo oficial com a marca</span>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const root = document.getElementById("porsche-sales");
+
+  const data = [
+    ["", "718 Cayman", "2022", "Credit Card", "Boston", "Delivered"],
+    ["2024-03-14", "911 Turbo S", "2024", "Wire Transfer", "Seattle", "Delivered"],
+    ["2024-04-18", "Cayenne Coupe", "2023", "Financing", "Austin", "In Transit"],
+    ["", "Macan S", "2021", "Cash", "Denver", "Pending"],
+    ["2024-05-22", "Taycan 4S", "2024", "Bank Transfer", "Los Angeles", "Delivered"],
+    ["2024-08-06", "Panamera 4", "2023", "Credit Card", "Miami", "Cancelled"],
+    ["2024-07-11", "911 Carrera S", "2020", "Lease", "New York", "Delivered"],
+    ["", "Cayenne E-Hybrid", "2022", "Wire Transfer", "San Diego", "Pending Approval"],
+    ["2024-08-19", "718 Boxster", "2021", "Debit Card", "Chicago", "Shipped"],
+    ["2024-09-02", "Macan GTS", "2024", "Financing", "Phoenix", "In Transit"],
+    ["2024-09-17", "Taycan Turbo", "2023", "ACH Payment", "Dallas", "Delivered"],
+    ["", "911 GT3", "2024", "Wire Transfer", "Las Vegas", "Pending"],
+    ["2024-05-11", "Panamera Turbo S", "2022", "Cash", "San Jose", "Delivered"],
+    ["2024-12-12", "Cayenne Turbo GT", "2024", "Crypto Payment", "Houston", "Awaiting Delivery"],
+    ["2024-12-25", "911 Carrera Cabriolet", "2023", "Credit Card", "Atlanta", "Delivered"],
+    ["2025-01-06", "Macan", "2021", "Bank Transfer", "Orlando", "Pending"],
+    ["", "718 Spyder RS", "2024", "Financing", "Portland", "In Transit"],
+    ["2025-02-14", "Taycan Cross Turismo", "2023", "Wire Transfer", "Charlotte", "Delivered"],
+    ["", "Cayenne S", "2022", "Credit Card", "Nashville", "Pending"],
+    ["2025-03-21", "911 Targa 4S", "2024", "Lease", "Minneapolis", "Delivered"],
+    ["2025-03-28", "Panamera", "2020", "Bank Transfer", "Philadelphia", "Cancelled"],
+    ["2025-04-09", "Macan Electric", "2025", "Wire Transfer", "San Antonio", "Delivered"],
+    ["", "911 Dakar", "2024", "Cash", "Salt Lake City", "Awaiting Pickup"],
+    ["2025-05-12", "Taycan GTS", "2023", "Financing", "Raleigh", "In Transit"],
+    ["2025-06-18", "Cayenne", "2021", "Credit Card", "Detroit", "Delivered"],
+    ["", "718 Cayman GT4 RS", "2024", "Wire Transfer", "Columbus", "Pending"],
+    ["2025-07-07", "911 Carrera GTS", "2022", "Cash", "Indianapolis", "Delivered"],
+    ["2025-07-22", "Panamera 4 E-Hybrid", "2023", "Lease", "Fort Worth", "In Transit"],
+    ["2025-08-14", "Macan T", "2022", "Wire Transfer", "Jacksonville", "Delivered"],
+    ["2025-09-01", "Taycan Turbo S", "2025", "Crypto Payment", "San Diego", "Pending Review"],
+    ["", "911 Carrera", "2024", "Credit Card", "Tampa", "Delivered"],
+    ["2025-09-18", "Cayenne S", "2023", "Bank Transfer", "Sacramento", "Pending"],
+    ["2025-10-04", "Macan", "2022", "Financing", "Cleveland", "Delivered"],
+    ["2025-10-12", "Taycan", "2025", "Wire Transfer", "Milwaukee", "In Transit"],
+    ["2025-10-29", "Panamera 4S", "2024", "Cash", "Kansas City", "Delivered"],
+    ["2025-02-11", "718 Boxster", "2021", "Debit Card", "Omaha", "Cancelled"],
+    ["2025-11-16", "911 Turbo", "2024", "Wire Transfer", "Albuquerque", "Awaiting Delivery"],
+    ["", "Cayenne Coupe", "2023", "Wire Transfer", "Tucson", "Pending Approval"],
+    ["", "Macan GTS", "2024", "Financing", "Fresno", "Shipped"],
+    ["2025-12-07", "Taycan 4S", "2025", "ACH Payment", "Virginia Beach", "In Transit"],
+    ["2025-12-22", "Panamera Turbo", "2022", "Credit Card", "Colorado Springs", "Delivered"],
+    ["", "911 GT3 RS", "2024", "Wire Transfer", "Arlington", "Pending"],
+    ["2026-01-08", "Cayenne E-Hybrid", "2023", "Lease", "Bakersfield", "Delivered"],
+    ["2026-01-15", "Macan T", "2022", "Cash", "Mesa", "Awaiting Pickup"],
+    ["2026-01-28", "Taycan Turbo", "2025", "Crypto Payment", "Atlanta", "Delivered"],
+    ["2026-02-03", "718 Cayman", "2021", "Bank Transfer", "Long Beach", "Pending"],
+    ["", "911 Targa 4", "2024", "Financing", "Oakland", "In Transit"],
+    ["2026-02-19", "Panamera", "2020", "Wire Transfer", "Tulsa", "Delivered"],
+    ["2026-02-25", "Cayenne Turbo", "2023", "Credit Card", "Wichita", "Pending"],
+    ["2026-03-01", "Macan Electric", "2025", "Lease", "New Orleans", "Delivered"],
+    ["2026-03-14", "911 Carrera S", "2022", "Bank Transfer", "Honolulu", "Cancelled"],
+    ["", "Taycan GTS", "2024", "Wire Transfer", "Anaheim", "Delivered"],
+    ["2026-04-08", "Cayenne", "2021", "Cash", "Henderson", "Awaiting Review"],
+    ["", "718 Spyder RS", "2025", "Financing", "Lexington", "In Transit"],
+    ["2026-04-21", "911 Dakar", "2024", "Credit Card", "Riverside", "Delivered"],
+    ["2026-04-29", "Panamera 4", "2023", "Wire Transfer", "Corpus Christi", "Pending"],
+    ["2026-05-05", "Macan S", "2021", "Cash", "St, Louis", "Delivered"],
+    ["2026-05-14", "Taycan Cross Turismo", "2024", "Lease", "Pittsburgh", "In Transit"],
+    ["2026-05-23", "Cayenne Turbo GT", "2025", "Wire Transfer", "Cincinnati", "Delivered"],
+    ["2026-06-02", "911 Carrera Cabriolet", "2023", "Crypto Payment", "Anchorage", "Pending Review"],
+    ["2026-06-15", "718 Cayman GT4 RS", "2024", "Credit Card", "Plano", "Delivered"],
+    ["", "Panamera 4 E-Hybrid", "2022", "Bank Transfer", "Newark", "Cancelled"],
+    ["2026-07-07", "Macan", "2021", "Financing", "Greensboro", "Awaiting Delivery"],
+    ["2026-07-20", "Taycan Turbo S", "2025", "Wire Transfer", "Lincoln", "Pending"],
+    ["", "Cayenne S", "2024", "Debit Card", "Jersey City", "Delivered"],
+    ["2026-04-08", "911 Carrera GTS", "2024", "Credit Card", "Chandler", "Delivered"],
+    ["2026-08-18", "718 Boxster GTS", "2023", "Lease", "Reno", "Shipped"],
+    ["2026-08-31", "Panamera Turbo S", "2022", "Wire Transfer", "Buffalo", "In Transit"],
+    ["2026-09-09", "Macan GTS", "2024", "ACH Payment", "Durham", "Delivered"],
+    ["2026-09-17", "Taycan 4S", "2025", "Wire Transfer", "Laredo", "Pending Approval"],
+    ["2026-09-28", "Cayenne E-Hybrid", "2023", "Cash", "Madison", "Delivered"],
+    ["2026-10-06", "911 Turbo S", "2025", "Crypto Payment", "Lubbock", "Awaiting Pickup"],
+    ["2026-10-16", "718 Cayman S", "2022", "Credit Card", "Toledo", "Cancelled"],
+    ["2026-10-29", "Macan Electric", "2026", "Wire Transfer", "Irvine", "Delivered"],
+    ["2026-11-03", "Panamera", "2021", "Financing", "Garland", "Pending"],
+    ["", "Cayenne Coupe", "2024", "Bank Transfer", "Irving", "In Transit"],
+    ["2026-12-11", "911 Targa 4S", "2023", "Cash", "Chesapeake", "Delivered"],
+    ["2026-12-24", "Taycan", "2025", "Lease", "Scottsdale", "Pending"],
+    ["", "Macan T", "2022", "Wire Transfer", "Norfolk", "Delivered"],
+    ["2026-12-28", "911 GT3", "2024", "Wire Transfer", "Boise", "Awaiting Delivery"],
+    ["2027-01-15", "911 Carrera", "2024", "Credit Card", "Orlando", "Delivered"],
+    ["2027-01-29", "Cayenne", "2023", "Bank Transfer", "San Jose", "Pending"],
+    ["2027-02-11", "Macan S", "2022", "Financing", "Tampa", "Delivered"],
+    ["", "Taycan 4S", "2025", "Wire Transfer", "Denver", "In Transit"],
+    ["2027-03-05", "Panamera", "2021", "Cash", "Austin", "Delivered"],
+    ["2027-03-18", "718 Cayman", "2023", "Debit Card", "Seattle", "Cancelled"],
+    ["2027-04-02", "911 Turbo S", "2026", "Wire Transfer", "Boston", "Awaiting Delivery"],
+    ["", "Cayenne Coupe", "2024", "Wire Transfer", "Phoenix", "Pending Approval"],
+    ["", "Macan Electric", "2026", "Financing", "Chicago", "Shipped"],
+    ["2027-05-12", "Taycan Turbo", "2025", "ACH Payment", "Dallas", "In Transit"],
+    ["2027-05-27", "Panamera 4S", "2024", "Credit Card", "San Francisco", "Delivered"],
+    ["", "911 GT3", "2026", "Wire Transfer", "Las Vegas", "Pending"],
+    ["2027-06-18", "Cayenne E-Hybrid", "2023", "Lease", "Charlotte", "Delivered"],
+    ["2027-07-03", "Macan T", "2022", "Cash", "Mesa", "Awaiting Pickup"],
+    ["2027-07-22", "Taycan GTS", "2025", "Crypto Payment", "Atlanta", "Delivered"],
+    ["2027-08-08", "718 Boxster", "2021", "Bank Transfer", "Long Beach", "Pending"],
+    ["", "911 Targa 4", "2024", "Financing", "Oakland", "In Transit"],
+    ["2027-09-19", "Panamera Turbo", "2020", "Wire Transfer", "Tulsa", "Delivered"],
+    ["2027-09-25", "Cayenne Turbo GT", "2025", "Credit Card", "Wichita", "Pending"],
+    ["2027-10-01", "911 Dakar", "2024", "Lease", "New Orleans", "Delivered"]
+  ];
+
+  const get = id => root.querySelector("#ps-" + id);
+
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+
+  let page = 0;
+  let localRows = [];
+
+  const filters = [
+    ["model", 1, "Todos os modelos"],
+    ["year", 2, "Todos os anos"],
+    ["city", 4, "Todas as cidades"],
+    ["pay", 3, "Todos os meios"]
+  ];
+
+  filters.forEach(([id, col, label]) => {
+    get(id).innerHTML =
+      '<option value="">' + label + "</option>" +
+      [...new Set(data.map(r => r[col]))]
+        .sort()
+        .map(v => "<option>" + esc(v) + "</option>")
+        .join("");
+
+    get(id).addEventListener("change", render);
+  });
+
+  ["start", "end", "cancel"].forEach(id => {
+    get(id).addEventListener("change", render);
+  });
+
+  get("reset").addEventListener("click", () => {
+    filters.forEach(([id]) => get(id).value = "");
+    get("start").value = "";
+    get("end").value = "";
+    get("cancel").checked = false;
+    get("local-city").value = "";
+    render();
+  });
+
+  function group(rows, col) {
+    const m = new Map();
+
+    rows.forEach(r => {
+      m.set(r[col], (m.get(r[col]) || 0) + 1);
+    });
+
+    return [...m].sort(
+      (a, b) => b[1] - a[1] || a[0].localeCompare(b[0])
+    );
+  }
+
+  function bars(id, items) {
+    const max = Math.max(1, ...items.map(v => v[1]));
+
+    get(id).innerHTML = items.length
+      ? items.map(([n, v]) =>
+          '<div class="bar-row">' +
+            "<span>" + esc(n) + "</span>" +
+            '<div class="bar-track" aria-hidden="true">' +
+              '<div class="bar-fill" style="width:' +
+                v / max * 100 + '%"></div>' +
+            "</div>" +
+            '<b class="count">' + v + "</b>" +
+          "</div>"
+        ).join("")
+      : '<div class="empty">Nenhum registro neste recorte.</div>';
+  }
+
+  function render() {
+    const start = get("start").value;
+    const end = get("end").value;
+    const period = !!(start || end);
+    const bad = start && end && start > end;
+
+    const base = data.filter(r =>
+      (get("cancel").checked || r[5] !== "Cancelled") &&
+      filters.every(([id, col]) =>
+        !get(id).value || r[col] === get(id).value
+      )
+    );
+
+    const rows = bad ? [] : base.filter(r =>
+      !period ||
+      (
+        r[0] &&
+        (!start || r[0] >= start) &&
+        (!end || r[0] <= end)
+      )
+    );
+
+    const invalid = base.filter(r => !r[0]).length;
+    const models = group(rows, 1);
+    const years = group(rows, 2);
+    const cities = group(rows, 4);
+
+    get("notice").innerHTML = bad
+      ? '<span class="error" role="alert">' +
+        "A data inicial deve ser anterior ou igual à data final." +
+        "</span>"
+      : rows.length + " de 100 registros · " +
+        (
+          get("cancel").checked
+            ? "cancelamentos incluídos"
+            : "cancelamentos excluídos"
+        ) +
+        " · " + invalid + " sem data válida " +
+        (
+          period
+            ? "excluído(s) pelo filtro de período."
+            : "incluído(s) no recorte."
+        );
+
+    const top = years.length
+      ? years.filter(x => x[1] === years[0][1])
+      : [];
+
+    const stats = [
+      [
+        "Registros no recorte",
+        rows.length,
+        "Pedidos, exceto cancelados por padrão"
+      ],
+      [
+        "Modelos presentes",
+        models.length,
+        "Versões de modelo distintas"
+      ],
+      [
+        "Ano-modelo líder",
+        top.length === 1
+          ? top[0][0]
+          : top.length
+            ? "Empate"
+            : "—",
+        top.length
+          ? top.map(x => x[0]).join(" / ") +
+            " · " + top[0][1] + " por ano"
+          : "Sem registros"
+      ],
+      [
+        "Cidades presentes",
+        cities.length,
+        "Mercados representados na seleção"
+      ]
+    ];
+
+    get("stats").innerHTML = stats.map(([l, v, s]) =>
+      '<div class="stat">' +
+        '<span class="eyebrow">' + l + "</span>" +
+        '<strong class="count">' + v + "</strong>" +
+        "<small>" + s + "</small>" +
+      "</div>"
+    ).join("");
+
+    bars("model-bars", models.slice(0, 8));
+
+    bars(
+      "year-bars",
+      [...years].sort((a, b) => a[0].localeCompare(b[0]))
+    );
+
+    get("year-insight").textContent = top.length
+      ? (
+          top.length === 1
+            ? "O ano-modelo " + top[0][0] + " lidera"
+            : "Empate entre os anos-modelo " +
+              top.map(x => x[0]).join(", ")
+        ) +
+        " com " + top[0][1] + " registro(s) por ano, " +
+        (top[0][1] / rows.length * 100).toLocaleString(
+          "pt-BR",
+          { maximumFractionDigits: 1 }
+        ) +
+        "% do recorte."
+      : "Ajuste os filtros para explorar a distribuição.";
+
+    const previous = get("local-city").value;
+
+    get("local-city").innerHTML =
+      '<option value="">Todas as cidades do recorte</option>' +
+      [...cities]
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([c]) => "<option>" + esc(c) + "</option>")
+        .join("");
+
+    get("local-city").value = cities.some(
+      ([c]) => c === previous
+    ) ? previous : "";
+
+    localRows = rows;
+    page = 0;
+    renderLocal();
+  }
+
+  function renderLocal() {
+    const selected = get("local-city").value;
+
+    const rows = localRows.filter(r =>
+      !selected || r[4] === selected
+    );
+
+    const cities = group(rows, 4);
+    const pageSize = 6;
+    const pages = Math.max(
+      1,
+      Math.ceil(cities.length / pageSize)
+    );
+
+    page = Math.max(0, Math.min(page, pages - 1));
+
+    get("cities-count").textContent =
+      cities.length + " cidade(s)";
+
+    get("city-rows").innerHTML = cities
+      .slice(page * pageSize, (page + 1) * pageSize)
+      .map(([city, n]) => {
+        const m = group(
+          rows.filter(r => r[4] === city),
+          1
+        );
+
+        const max = m[0][1];
+        const min = m[m.length - 1][1];
+        const hi = m.filter(x => x[1] === max);
+        const lo = m.filter(x => x[1] === min);
+
+        const cell = (arr, v) =>
+          arr.map(x =>
+            '<span class="model-tag">' +
+              esc(x[0]) +
+            "</span>"
+          ).join(" ") +
+          "<small>" +
+            v + " registro(s) por modelo" +
+            (arr.length > 1 ? " · empate" : "") +
+          "</small>";
+
+        return (
+          "<tr>" +
+            "<td>" + esc(city) + "</td>" +
+            '<td class="count">' +
+              '<span class="volume">' + n + "</span>" +
+            "</td>" +
+            "<td>" + cell(hi, max) + "</td>" +
+            "<td>" + cell(lo, min) + "</td>" +
+          "</tr>"
+        );
+      }).join("") ||
+      '<tr><td colspan="4">' +
+        "Nenhum registro encontrado. Altere os filtros." +
+      "</td></tr>";
+
+    get("page-label").textContent = cities.length
+      ? "Cidades " + (page * pageSize + 1) +
+        "–" + Math.min((page + 1) * pageSize, cities.length) +
+        " de " + cities.length +
+        " · Página " + (page + 1) + " de " + pages
+      : "Nenhuma cidade no recorte";
+
+    get("prev").disabled = page === 0;
+    get("next").disabled = page >= pages - 1;
+
+    const ties = cities.filter(([city]) => {
+      const m = group(
+        rows.filter(r => r[4] === city),
+        1
+      );
+
+      return m.filter(
+        x => x[1] === m[0][1]
+      ).length > 1;
+    }).length;
+
+    get("local-insight").textContent = cities.length
+      ? (
+          selected
+            ? selected + " · " +
+              rows.length + " registro(s) na seleção. "
+            : cities
+                .filter(x => x[1] === cities[0][1])
+                .map(x => x[0])
+                .join(", ") +
+              " lidera(m) em volume: " +
+              cities[0][1] +
+              " registro(s) por cidade. "
+        ) +
+        ties + " cidade(s) com empate na liderança. " +
+        "Amostras pequenas não comprovam preferência ou baixa demanda."
+      : "Sem dados para comparar cidades.";
+  }
+
+  get("local-city").addEventListener("change", () => {
+    page = 0;
+    renderLocal();
+  });
+
+  get("local-reset").addEventListener("click", () => {
+    get("local-city").value = "";
+    page = 0;
+    renderLocal();
+  });
+
+  get("prev").addEventListener("click", () => {
+    page--;
+    renderLocal();
+  });
+
+  get("next").addEventListener("click", () => {
+    page++;
+    renderLocal();
+  });
+
+  render();
+})();
+</script>
+</div>
+</body>
+</html>
